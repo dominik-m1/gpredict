@@ -28,7 +28,7 @@ const games = [
   {
     id: "1",
     name: "Chiefs vs Bills",
-    teams: { 
+    teams: {
       home: { name: "Chiefs", logo: "🏈", color: "text-red-400" },
       away: { name: "Bills", logo: "🏈", color: "text-blue-400" }
     },
@@ -41,7 +41,7 @@ const games = [
   {
     id: "2",
     name: "Bengals vs Ravens",
-    teams: { 
+    teams: {
       home: { name: "Bengals", logo: "🐅", color: "text-orange-400" },
       away: { name: "Ravens", logo: "🦅", color: "text-purple-400" }
     },
@@ -54,7 +54,7 @@ const games = [
   {
     id: "3",
     name: "49ers vs Cowboys",
-    teams: { 
+    teams: {
       home: { name: "49ers", logo: "⭐", color: "text-yellow-400" },
       away: { name: "Cowboys", logo: "🤠", color: "text-blue-400" }
     },
@@ -67,7 +67,7 @@ const games = [
   {
     id: "4",
     name: "Eagles vs Packers",
-    teams: { 
+    teams: {
       home: { name: "Eagles", logo: "🦅", color: "text-green-400" },
       away: { name: "Packers", logo: "🧀", color: "text-emerald-400" }
     },
@@ -80,7 +80,7 @@ const games = [
   {
     id: "5",
     name: "Rams vs Seahawks",
-    teams: { 
+    teams: {
       home: { name: "Rams", logo: "🐏", color: "text-blue-400" },
       away: { name: "Seahawks", logo: "🦅", color: "text-green-400" }
     },
@@ -93,7 +93,7 @@ const games = [
   {
     id: "6",
     name: "Patriots vs Dolphins",
-    teams: { 
+    teams: {
       home: { name: "Patriots", logo: "⭐", color: "text-indigo-400" },
       away: { name: "Dolphins", logo: "🐬", color: "text-cyan-400" }
     },
@@ -176,7 +176,7 @@ export default function TapPredict() {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number>(0)
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const isDragging = useRef(false)
@@ -234,7 +234,7 @@ export default function TapPredict() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
-      
+
       // Check if it's the first time visiting
       const hasVisited = localStorage.getItem("hasVisitedBefore")
       if (!hasVisited) {
@@ -408,7 +408,7 @@ export default function TapPredict() {
       // Check if current time has passed the bet's cell time position
       const cellStartTime = bet.col * CELL_WIDTH / lineSpeed * 1000
       const cellEndTime = (bet.col + 1) * CELL_WIDTH / lineSpeed * 1000
-      
+
       // Only check for wins if we're within or past the cell's time range
       if (timestamp < cellStartTime) return
 
@@ -595,7 +595,7 @@ export default function TapPredict() {
         const numColumns = Math.ceil((canvasWidth - Y_AXIS_PADDING) / CELL_WIDTH) + 1
 
         // Don't draw Y-axis labels in cache - they'll be drawn as sticky overlay
-        
+
         cacheCtx.fillStyle = "rgba(255, 255, 255, 0.15)"
         cacheCtx.lineWidth = 1.5
 
@@ -751,26 +751,26 @@ export default function TapPredict() {
         ctx.fill()
         ctx.shadowBlur = 0
       }
-      
+
       // Draw sticky Y-axis labels with background
       const scrollLeft = containerRef.current?.scrollLeft || 0
       ctx.save()
-      
+
       // Draw background for Y-axis labels
       ctx.fillStyle = "rgba(0, 0, 0, 0.85)"
       ctx.fillRect(scrollLeft, 0, Y_AXIS_PADDING, canvas.height)
-      
+
       ctx.fillStyle = "rgba(255, 255, 255, 0.7)"
       ctx.font = "bold 13px monospace"
       ctx.textAlign = "right"
       ctx.textBaseline = "middle"
-      
+
       for (let row = 0; row < GRID_ROWS; row++) {
         const value = getGridValue(row)
         const y = row * CELL_HEIGHT + X_AXIS_PADDING + CELL_HEIGHT / 2
         ctx.fillText(value.toFixed(1), scrollLeft + Y_AXIS_PADDING - 10, y)
       }
-      
+
       ctx.restore()
     }
 
@@ -803,7 +803,7 @@ export default function TapPredict() {
     const currentLine = lineHistory[lineHistory.length - 1]
     const currentX = currentLine ? timeToX(currentLine.timestamp) + Y_AXIS_PADDING : Y_AXIS_PADDING
     const blockX = col * CELL_WIDTH + Y_AXIS_PADDING
-    
+
     // Prevent selection if block is in the past (left of current line)
     if (blockX < currentX) return
 
@@ -865,10 +865,10 @@ export default function TapPredict() {
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDragging.current) return
     e.preventDefault()
-    
+
     const deltaX = touchStartX.current - e.clientX
     const deltaY = touchStartY.current - e.clientY
-    
+
     if (containerRef.current) {
       containerRef.current.scrollLeft = dragStartScrollLeft.current + deltaX
       containerRef.current.scrollTop = dragStartScrollTop.current + deltaY
@@ -878,11 +878,11 @@ export default function TapPredict() {
   const handleCanvasMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const wasDragging = isDragging.current
     isDragging.current = false
-    
+
     // Only trigger click if there was no significant drag
     const deltaX = Math.abs(touchStartX.current - e.clientX)
     const deltaY = Math.abs(touchStartY.current - e.clientY)
-    
+
     if (!wasDragging || (deltaX < 5 && deltaY < 5)) {
       handleCanvasClick(e)
     } else {
@@ -904,10 +904,10 @@ export default function TapPredict() {
   const handleCanvasTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
     if (!isDragging.current || e.touches.length !== 1) return
     e.preventDefault()
-    
+
     const deltaX = touchStartX.current - e.touches[0].clientX
     const deltaY = touchStartY.current - e.touches[0].clientY
-    
+
     if (containerRef.current) {
       containerRef.current.scrollLeft = dragStartScrollLeft.current + deltaX
       containerRef.current.scrollTop = dragStartScrollTop.current + deltaY
@@ -1097,7 +1097,7 @@ export default function TapPredict() {
                       </div>
                       <span className="text-sm font-bold text-white">{scores.home}</span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-base">{game.teams.away.logo}</span>
@@ -1220,8 +1220,8 @@ export default function TapPredict() {
       </div>
 
       <div ref={containerRef} className="relative flex-1 overflow-auto border-t border-white/10">
-        <canvas 
-          ref={canvasRef} 
+        <canvas
+          ref={canvasRef}
           onMouseDown={handleCanvasMouseDown}
           onMouseMove={handleCanvasMouseMove}
           onMouseUp={handleCanvasMouseUp}
@@ -1229,13 +1229,13 @@ export default function TapPredict() {
           onTouchStart={handleCanvasTouchStart}
           onTouchMove={handleCanvasTouchMove}
           onTouchEnd={handleCanvasTouchEnd}
-          className="cursor-grab active:cursor-grabbing touch-none" 
+          className="cursor-grab active:cursor-grabbing touch-none"
         />
       </div>
 
       {isMobile && (
         <div className="fixed bottom-0 left-0 right-0 z-20 pointer-events-none pb-safe">
-          <div className="h-40" style={{ 
+          <div className="h-40" style={{
             background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.95) 40%, rgba(0,0,0,0.7) 70%, transparent 100%)',
             pointerEvents: 'auto'
           }}>
