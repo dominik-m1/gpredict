@@ -1,8 +1,10 @@
-const isProd = process.env.NODE_ENV === "production"
-
 const nextConfig = {
   output: "export",
-  basePath: isProd ? "/gpredict" : "",
+  trailingSlash: true,
+
+  basePath: "/gpredict",
+  assetPrefix: "/gpredict/",
+
   images: {
     unoptimized: true,
   },
