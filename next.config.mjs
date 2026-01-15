@@ -1,11 +1,15 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+
+  basePath: "/gpredict",
+  assetPrefix: "/gpredict/",
+
   images: {
     unoptimized: true,
+  },
+
+  typescript: {
+    ignoreBuildErrors: true,
   },
 }
 
