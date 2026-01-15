@@ -1,8 +1,14 @@
+/** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === "production"
+
 const nextConfig = {
   output: "export",
 
-  basePath: "/gpredict",
-  assetPrefix: "/gpredict/",
+  // REQUIRED for GitHub Pages
+  trailingSlash: true,
+
+  basePath: isProd ? "/gpredict" : "",
+  assetPrefix: isProd ? "/gpredict/" : "",
 
   images: {
     unoptimized: true,
